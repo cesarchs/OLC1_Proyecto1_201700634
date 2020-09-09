@@ -9,15 +9,17 @@ columna = 0
 counter = 0
 
 Errores = []
-
+Comentarios = []
+pathh =''
 reservadas = ['html','head','body','h1','h2', 'h3', 'h4', 'h5', 'h6', 'div', 'table', 'title', 'img', 'ol', 'ul', 'li', 'th', 'tr', 'td', 'caption', 'col', 'thead', 'tfoot', 'colgroup', 'tbody']
 
 signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "PARA":'\(', "PARC":'\)', "IGUAL":'=', "diagonal":'/', "signoMayorQue":'>', "signoMenorQue":'<', "dosPuntos":':', "Arroba":'@'}
 signos2 = {"corcheteA":'\[',"corcheteC":']',"numeral":'#',"interrogacionA":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guion":'-',"dolar":'\$'}
+comentario = { "diagonalDoble":'/',"comillasDoblesxd":'"'}
  # hay problemas con el asterisco *
 
 def inic(text):
-    global linea, columna, counter, Errores
+    global linea, columna, counter, Errores,pathh
     linea = 1
     columna = 1
     listaTokens = []
@@ -35,11 +37,10 @@ def inic(text):
             counter += 1
             columna += 1 
         else:
-            #SIGNOS
+            # SIGNOS
             isSign = False
             for clave in signos:
                 valor = signos[clave]
-
                 if re.search(valor, text[counter]):
                     listaTokens.append([linea, columna, clave, valor.replace('\\','')])
                     counter += 1
@@ -55,6 +56,18 @@ def inic(text):
                             columna += 1
                             isSign = True
                             break
+                        else: #ESTE ES PARA COMENTARIOS UNILINIEA 
+                            for clave3 in comentario:
+                                valor3 = comentario[clave3]
+                                if re.search(valor3,text[counter]):
+                                    if re.search(valor3,text[counter +1]):
+                                        # Comentarios.append([linea, columna, clave3, valor3.replace('\\','')])
+                                        Comentarios.append(StateComent(linea, columna, text, text[counter]))
+                                        counter += 1
+                                        columna += 1
+                                        isSign = True
+                                break 
+ 
 
             if not isSign:
                 columna += 1
@@ -63,6 +76,9 @@ def inic(text):
     return listaTokens
 
 #[linea, columna, tipo, valor]
+
+
+#--------------------------------- ESTADOS---------------------------------
 
 def StateIdentifier(line, column, text, word):
     global counter, columna
@@ -105,6 +121,20 @@ def StateDecimal(line, column, text, word):
     else:
         return [line, column, 'decimal', word]
 
+def StateComent (line, column, text, word):
+    global counter, columna
+    pattern = '//'
+    counter += 1
+    columna += 1
+    if counter < len(text):
+        if re.findall (pattern, text): #comentario unilinea
+            return StateComent(line, column, text, word + text[counter])
+        else:
+            print ("hola")
+            return [line,column,'comentarioUnilinea',word]
+            
+
+
 def Reserved(TokenList):
     for token in TokenList:
         if token[2] == 'identificador':
@@ -113,6 +143,10 @@ def Reserved(TokenList):
                 if re.match(palabra, token[3], re.IGNORECASE):
                     token[2] = 'reservada'
                     break
+
+
+
+                
 nombre= 'entrada2' 
 entrada = open(nombre +'.olc1')
 contenido = entrada.read()
@@ -124,3 +158,9 @@ for token in tokens:
 print('ERRORES')
 for error in Errores:
     print(error)
+print ('COMENTARIOS')
+for coment in Comentarios:
+    print(coment) 
+print ('PATH')
+for pat in pathh: 
+    print (pat)

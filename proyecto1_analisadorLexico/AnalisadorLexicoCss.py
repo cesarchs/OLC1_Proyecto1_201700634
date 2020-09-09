@@ -8,16 +8,18 @@ class AnalisadorLexicoCss:
     counter = 0
 
     Errores = []
+    Comentario = []
 
     reservadas = ['html','head','body','h1','h2', 'h3', 'h4', 'h5', 'h6', 'div', 'table', 'title', 'img', 'ol', 'ul', 'li', 'th', 'tr', 'td', 'caption', 'col', 'thead', 'tfoot', 'colgroup', 'tbody']
 
     signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "PARA":'\(', "PARC":'\)', "IGUAL":'=', "diagonal":'/', "signoMayorQue":'>', "signoMenorQue":'<', "dosPuntos":':', "Arroba":'@'}
     signos2 = {"corcheteA":'\[',"corcheteC":']',"numeral":'#',"interrogacionA":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guion":'-',"dolar":'\$'}
+    comentario = { "diagonalDoble":'//',"comillasDobles":'"'}
     # hay problemas con el asterisco *
     #EXPRESIONES REGULARES PARA IMPLEMENTACIÓN DE ANÁLISIS LÉXICO
 
     def inic(self,text):
-        global linea, columna, counter, Errores
+        global linea, columna, counter, Errores, Comentario
         linea = 1
         columna = 1
         listaTokens = []
@@ -39,7 +41,6 @@ class AnalisadorLexicoCss:
                 isSign = False
                 for clave in AnalisadorLexicoCss.signos:
                     valor = AnalisadorLexicoCss.signos[clave]
-
                     if re.search(valor, text[counter]):
                         listaTokens.append([linea, columna, clave, valor.replace('\\','')])
                         counter += 1
