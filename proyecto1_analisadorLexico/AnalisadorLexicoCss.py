@@ -8,13 +8,12 @@ class AnalisadorLexicoCss:
     counter = 0
 
     Errores = []
-    Comentario = []
+    Comentarios = []
 
     reservadas = ['html','head','body','h1','h2', 'h3', 'h4', 'h5', 'h6', 'div', 'table', 'title', 'img', 'ol', 'ul', 'li', 'th', 'tr', 'td', 'caption', 'col', 'thead', 'tfoot', 'colgroup', 'tbody']
-
     signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "PARA":'\(', "PARC":'\)', "IGUAL":'=', "diagonal":'/', "signoMayorQue":'>', "signoMenorQue":'<', "dosPuntos":':', "Arroba":'@'}
-    signos2 = {"corcheteA":'\[',"corcheteC":']',"numeral":'#',"interrogacionA":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guion":'-',"dolar":'\$'}
-    comentario = { "diagonalDoble":'//',"comillasDobles":'"'}
+    signos2 = {"corcheteA":'\[',"corcheteC":']',"numeral":'#',"admiracion":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guion":'-',"dolar":'\$', "coma":','}
+    comentario = { "diagonalDoble":'/',"comillasDoblesxd":'"'}
     # hay problemas con el asterisco *
     #EXPRESIONES REGULARES PARA IMPLEMENTACIÓN DE ANÁLISIS LÉXICO
 
@@ -25,7 +24,7 @@ class AnalisadorLexicoCss:
         listaTokens = []
         counter= AnalisadorLexicoCss.counter
         while counter < len(text):
-            if re.search(r"[A-Za-z]", text[counter]): #CADENA
+            if re.search(r"[A-Za-z']", text[counter]): #CADENA
                 listaTokens.append(StateIdentifier(linea, columna, text, text[counter]))
             elif re.search(r"[0-9]", text[counter]): #NUMERO
                 listaTokens.append(StateNumber(linea, columna, text, text[counter]))
@@ -36,6 +35,12 @@ class AnalisadorLexicoCss:
             elif re.search(r"[ \t]", text[counter]):#ESPACIOS Y TABULACIONES
                 counter += 1
                 columna += 1 
+
+            elif text[counter]=='*':
+                AnalisadorLexicoCss.Comentarios.append(StateComent(linea, columna, text, text[counter]))
+                counter += 1
+                columna += 1 
+                
             else:
                 #SIGNOS
                 isSign = False
@@ -56,6 +61,17 @@ class AnalisadorLexicoCss:
                                 columna += 1
                                 isSign = True
                                 break
+
+                            # else: #ESTE ES PARA COMENTARIOS UNILINIEA 
+                            #     for clave3 in AnalisadorLexicoCss.comentario:
+                            #         valor3 = AnalisadorLexicoCss.comentario[clave3]
+                            #         # if re.search(valor3, text[counter-1]+text[counter]):
+                            #         if re.search(valor3, text[counter]):
+                            #             AnalisadorLexicoCss.Comentarios.append(StateComent(linea, columna, text, text[counter]))
+                            #             counter += 1
+                            #             columna += 1
+                            #             isSign = True
+                            #         break 
 
                 if not isSign:
                     columna += 1
@@ -106,6 +122,38 @@ def StateDecimal(line, column, text, word):
     else:
         return [line, column, 'decimal', word]
 
+# def StateComent (line, column, text, word):
+#     global counter, columna
+#     pattern = '/\*'
+#     counter += 1
+#     columna += 1
+#     palabraContador =counter
+#     palabraContador = palabraContador
+#     if counter < len(text):
+#         if re.findall (pattern, text): #comentario unilinea
+#             if text[palabraContador]!= "\*" and text[palabraContador]!= "/" :
+#                 return StateComent(line, column, text, word + text[palabraContador])
+#             else:
+#                 return [line,column,'comentario',word]
+#         else:
+#             return [line,column,'comentario',word]
+def StateComent (line,column, text, word ):
+    global counter, columna
+    pattern = '/\*'
+    counter += 1
+    columna += 1 
+    if counter < len(text):
+        for match in re.findall (pattern, text):
+                clave = text[counter] 
+                if clave != '*':
+                    # print ('si entra al state')
+                    return StateComent(line, column, text, word + text[counter])
+                else:
+                    # print ('no entra')
+                    return [line,column,'comentarioUnilinea',word]
+            # print('Found {!r}'.format(match))
+            # print ('aca hay un comentario')
+
 def Reserved(TokenList):
     for token in TokenList:
         if token[2] == 'identificador':
@@ -114,7 +162,9 @@ def Reserved(TokenList):
                 if re.match(palabra, token[3], re.IGNORECASE):
                     token[2] = 'reservada'
                     break
-nombre= 'entrada' 
+
+
+nombre= 'entrada3' 
 entrada = open(nombre +'.olc1')
 contenido = entrada.read()
 print(contenido)
@@ -126,3 +176,9 @@ for token in tokens:
 print('ERRORES')
 for error in AnalisadorLexicoCss.Errores:
     print(error)
+print ('COMENTARIOS')
+for coment in AnalisadorLexicoCss.Comentarios:
+    print(coment) 
+# print ('PATH')
+# for pat in pathh: 
+#     print (pat)
