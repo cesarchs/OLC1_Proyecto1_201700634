@@ -63,3 +63,10 @@ for match in re.findall(pattern, text[0]+text[1]):
 
 # if re.findall(pattern, text):
 #     print ('entro')
+
+counter =0
+print (counter +2)
+
+counter -=1
+
+print (counter)
