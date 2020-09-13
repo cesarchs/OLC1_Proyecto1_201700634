@@ -10,13 +10,11 @@ class AnalisadorLexicoJs:
     Comentarios = []
     Bitacora = []
 
-    reservadas = ['color','font','size','background','margin','top','bottom','text','align','position','hover','before','after','container','header','content',
-                    'border','weight','padding','left','line','height','opacity','family','right','width','image','style','display','margin','float','clear','max','min',
-                    'px','em','vh','vw','in','cm','mm','pt','pc','url','content']
-    signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "ParA":'\(', "ParC":'\)', "IGUAL":'=', "diagonal":'/', "dosPuntos":':', "asterisco":'\*'}
-    signos2 = {"numeral":'#',"admiracion":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guionMedio":'-', "coma":',','gionBajo':'_'}
+    reservadas = ['var','true','if','console','log','else','for','while','Do','continue','break','return','this','class','Math','pow']
+    signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "ParA":'\(', "ParC":'\)', "IGUAL":'=', "diagonal":'/', "dosPuntos":':', "asterisco":'\*',"SigMas":'\+',"SigMen":'-',"mayorQue":'>',"menorQue":'<'}
+    signos2 = {"numeral":'#',"admiracion":'!',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guionMedio":'-', "coma":',','gionBajo':'_'}
     comentario = { "diagonalDoble":'/',"comillasDoblesxd":'"'}
-    # hay problemas con el asterisco *
+
     #EXPRESIONES REGULARES PARA IMPLEMENTACIÓN DE ANÁLISIS LÉXICO
 
     def inic(self,text):
@@ -44,9 +42,13 @@ class AnalisadorLexicoJs:
                 counter += 1
                 columna += 1 
             elif text[counter]=='/' and text[counter+1]=='/':
-                counter += 1
                 AnalisadorLexicoJs.Comentarios.append(StateComent(linea, columna, text, ''))
                 counter += 1
+                columna += 1 
+            elif text[counter]=='/' and text[counter+1]=='*':
+                counter += 1
+                AnalisadorLexicoJs.Comentarios.append(StateComentM(linea, columna, text, ''))
+                counter += 2
                 columna += 1 
             else:
                 #SIGNOS
@@ -128,7 +130,7 @@ def StateDecimal(line, column, text, word):
 
 #si en el comentario no viene el cierre muere el programa, y si viene de ultimo
 #tiene que venir al menos un espacio para la comprovacion que ahi termina el comentario 
-def StateComent (line,column, text, word ):
+def StateComent (line,column, text, word ):# unilinea 
     global counter, columna, linea
     pattern = '//'
     counter += 1
@@ -141,10 +143,29 @@ def StateComent (line,column, text, word ):
             if clave != '\n':
                 return StateComent(line, column, text, word + text[palabraContador])    
             else:
-                 return [line,column,'comentarioUnilinea',word]
-            # else:
-            #     AnalisadorLexicoJs.Bitacora.append(['ESTADO COMENTARIO ',line, column, word]) #aca llenamos el vector de bitacora
-            #     return [line,column,'comentarioUnilinea',word]
+                AnalisadorLexicoJs.Bitacora.append(['ESTADO COMENTARIO UNILINEA ',line, column, word])#aca llenamos el vector de bitacora 
+                return [line,column,'comentarioUnilinea',word]
+
+def StateComentM (line,column, text, word ): # multilinea 
+    global counter, columna, linea
+    pattern = '/\*'
+    counter += 1
+    # columna += 1 
+    if counter < len(text):
+        for match in re.findall (pattern, text):
+            clave = text[counter] 
+            clave2 = text[counter+1]
+            if clave != '*' or clave2 != '/': 
+                if clave =="\n":
+                    linea+=1
+                    return StateComentM(line, column, text, word + ' ')
+                    
+                else:
+                    return StateComentM(line, column, text, word + text[counter])
+            else:
+                AnalisadorLexicoJs.Bitacora.append(['ESTADO COMENTARIO MULT',line, column, word]) #aca llenamos el vector de bitacora
+                return [line,column,'comentarioMultilinea ',word]
+
 
 def StateUrl (line,column, text, word ):
     global counter, columna, linea
@@ -175,8 +196,8 @@ def Reserved(TokenList):
                     break
 
 
-nombre= 'entrada' 
-entrada = open(nombre +'.olc1')
+nombre= 'entrada4' 
+entrada = open(nombre +'.js')
 contenido = entrada.read()
 print(contenido)
 hola= AnalisadorLexicoJs()
@@ -193,6 +214,6 @@ for coment in AnalisadorLexicoJs.Comentarios:
 # print ('PATH')
 # for pat in pathh: 
 #     print (pat)
-print ('BITACORA')
-for bita in AnalisadorLexicoJs.Bitacora:
-    print (bita)
+# print ('BITACORA')
+# for bita in AnalisadorLexicoJs.Bitacora:
+#     print (bita)

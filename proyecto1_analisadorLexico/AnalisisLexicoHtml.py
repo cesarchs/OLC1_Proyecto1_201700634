@@ -148,8 +148,8 @@ def Reserved(TokenList):
                     token[2] = 'reservada'
                     break
                 
-nombre= 'entrada2' 
-entrada = open(nombre +'.olc1')
+nombre= 'entrada' 
+entrada = open(nombre +'.html')
 contenido = entrada.read()
 print(contenido)
 tokens = inic(contenido)

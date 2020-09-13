@@ -14,9 +14,8 @@ class AnalisadorLexicoCss:
                     'border','weight','padding','left','line','height','opacity','family','right','width','image','style','display','margin','float','clear','max','min',
                     'px','em','vh','vw','in','cm','mm','pt','pc','url','content']
     signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "ParA":'\(', "ParC":'\)', "IGUAL":'=', "diagonal":'/', "dosPuntos":':', "asterisco":'\*'}
-    signos2 = {"numeral":'#',"admiracion":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guionMedio":'-', "coma":',','gionBajo':'_'}
+    signos2 = {"numeral":'#',"admiracion":'!',"porcentaje":'%',"pipe":'\|',"punto":'\.',"comillasDobles":'"',"guionMedio":'-', "coma":',',"gionBajo":'_'}
     comentario = { "diagonalDoble":'/',"comillasDoblesxd":'"'}
-    # hay problemas con el asterisco *
     #EXPRESIONES REGULARES PARA IMPLEMENTACIÓN DE ANÁLISIS LÉXICO
 
     def inic(self,text):
@@ -146,7 +145,7 @@ def StateComent (line,column, text, word ):
                     return StateComent(line, column, text, word + text[counter])
             else:
                 AnalisadorLexicoCss.Bitacora.append(['ESTADO COMENTARIO ',line, column, word]) #aca llenamos el vector de bitacora
-                return [line,column,'comentarioUnilinea',word]
+                return [line,column,'comentario',word]
 
 def StateUrl (line,column, text, word ):
     global counter, columna, linea
