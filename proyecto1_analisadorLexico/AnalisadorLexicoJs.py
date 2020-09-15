@@ -1,4 +1,4 @@
-#analisador lexico para HTML
+#analisador lexico para HTML 
 import re
 class AnalisadorLexicoJs:
     def __init__(self):
@@ -9,6 +9,7 @@ class AnalisadorLexicoJs:
     Errores = []
     Comentarios = []
     Bitacora = []
+    graficar ="digraph finite{ rankdir=LR; size=\"8,5\" node [shape = doublecircle]; S_0 IDENT NUM; node [shape = circle]; S_0 -> IDENT [ label = \"letra\" ]; S_0 -> S_0 [ label = \"simb\" ]; S_0 -> NUM [ label = \"numero\" ]; IDENT -> NUM [ label = \"numero\" ]; IDENT -> S_0 [ label = \"simb\" ]; IDENT -> IDENT [ label = \"letra\" ]; NUM -> IDENT [ label = \"letra\" ]; NUM -> S_0 [ label = \"simb\" ]; NUM -> NUM [ label = \"numero\" ]; NUM -> NUM [ label = \"punto\" ]; coment -> S_0 [label = \"\\n,*/\"]; coment -> NUM [label = \"\\n,*/\"]; coment -> IDENT [label = \"\\n,*/\"]; coment -> coment [label = \"caracter\"]; IDENT -> coment [ label = \"//,/*\" ]; NUM -> coment [ label = \"//,/*\" ];  S_0 -> coment [ label = \"//,/*\" ]; error -> S_0 [label = \"Simb.\"]; error -> NUM [label = \"Numero\"]; error -> IDENT [label = \"letra\"]; error -> error [label = \"Desc.\"]; error -> coment [label = \"//,/*\"]; IDENT -> error [ label = \"Desc.\" ]; NUM -> error [ label = \"Desc.\" ]; S_0 -> error [ label = \"Desc.\" ]; }"
 
     reservadas = ['var','true','if','console','log','else','for','while','Do','continue','break','return','this','class','Math','pow']
     signos = {"PUNTOCOMA":';', "LLAVEA":'{', "LLAVEC":'}', "ParA":'\(', "ParC":'\)', "IGUAL":'=', "diagonal":'/', "dosPuntos":':', "asterisco":'\*',"SigMas":'\+',"SigMen":'-',"mayorQue":'>',"menorQue":'<'}
@@ -24,7 +25,7 @@ class AnalisadorLexicoJs:
         listaTokens = []
         counter= AnalisadorLexicoJs.counter
         while counter < len(text):
-            if text[counter]=='u' and text[counter+1]=='r' and text[counter+2]=='l':
+            if text[counter]=='u' and text[counter+1]=='r' and text[counter+2]=='l' and text[counter+4]=='=':
                 listaTokens.append(StateIdentifier(linea, columna, text, text[counter]))
                 counter += 4
                 listaTokens.append(StateUrl(linea, columna, text, ''))
@@ -176,7 +177,7 @@ def StateUrl (line,column, text, word ):
         for match in re.findall (pattern, text):
             clave = text[counter] 
             clave2 = text[counter+1]
-            if clave != '"' or clave2 != ')': # el delimitador para el comentario es solo el * (no el conjunto de */)
+            if clave != '\'':# or clave2 != ')': # el delimitador para el comentario es solo el * (no el conjunto de */)
                 if clave =="\n":
                     linea+=1
                     return StateUrl(line, column, text, word + ' ')               
@@ -185,6 +186,10 @@ def StateUrl (line,column, text, word ):
             else:
                 AnalisadorLexicoJs.Bitacora.append(['ESTADO URL ',line, column, word])#aca llenamos el vector de bitacora
                 return [line,column,'URL',word]
+
+def MGraficar ():
+    global graphic
+    graphic ="digraph finite{ rankdir=LR; size=\"8,5\" node [shape = doublecircle]; S_0 IDENT NUM; node [shape = circle]; S_0 -> IDENT [ label = \"letra\" ]; S_0 -> S_0 [ label = \"simb\" ]; S_0 -> NUM [ label = \"numero\" ]; IDENT -> NUM [ label = \"numero\" ]; IDENT -> S_0 [ label = \"simb\" ]; IDENT -> IDENT [ label = \"letra\" ]; NUM -> IDENT [ label = \"letra\" ]; NUM -> S_0 [ label = \"simb\" ]; NUM -> NUM [ label = \"numero\" ]; NUM -> NUM [ label = \"punto\" ]; coment -> S_0 [label = \"\\n,*/\"]; coment -> NUM [label = \"\\n,*/\"]; coment -> IDENT [label = \"\\n,*/\"]; coment -> coment [label = \"caracter\"]; IDENT -> coment [ label = \"//,/*\" ]; NUM -> coment [ label = \"//,/*\" ];  S_0 -> coment [ label = \"//,/*\" ]; error -> S_0 [label = \"Simb.\"]; error -> NUM [label = \"Numero\"]; error -> IDENT [label = \"letra\"]; error -> error [label = \"Desc.\"]; error -> coment [label = \"//,/*\"]; IDENT -> error [ label = \"Desc.\" ]; NUM -> error [ label = \"Desc.\" ]; S_0 -> error [ label = \"Desc.\" ]; }"
 
 def Reserved(TokenList):
     for token in TokenList:
@@ -195,9 +200,8 @@ def Reserved(TokenList):
                     token[2] = 'reservada'
                     break
 
-
-nombre= 'entrada4' 
-entrada = open(nombre +'.js')
+nombre= 'entrada2' 
+entrada = open(nombre +'.olc1')
 contenido = entrada.read()
 print(contenido)
 hola= AnalisadorLexicoJs()
@@ -217,3 +221,4 @@ for coment in AnalisadorLexicoJs.Comentarios:
 # print ('BITACORA')
 # for bita in AnalisadorLexicoJs.Bitacora:
 #     print (bita)
+print ('GRAFICA')

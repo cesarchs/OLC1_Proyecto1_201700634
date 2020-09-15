@@ -1,0 +1,58 @@
+SIN ESTADO DE COMENTARIOS 
+digraph finite{
+	rankdir=LR;
+	size="8,5"
+	node [shape = doublecircle]; S_0 IDENT NUM;
+	node [shape = circle];
+	S_0 -> IDENT [ label = "letra" ];
+	S_0 -> S_0 [ label = "simb" ];
+	S_0 -> NUM [ label = "numero" ];
+	IDENT -> NUM [ label = "numero" ];
+    IDENT -> S_0 [ label = "simb" ];
+	IDENT -> IDENT [ label = "letra" ];
+	NUM -> IDENT [ label = "letra" ];
+	NUM -> S_0 [ label = "simb" ];
+	NUM -> NUM [ label = "numero" ];
+	NUM -> NUM [ label = "punto" ];
+	error -> S_0 [label = "Simb."];
+    error -> NUM [label = "Numero"];
+    error -> IDENT [label = "letra"];
+    error -> error [label = "Desc."];
+	IDENT -> error [ label = "Desc." ];
+	NUM -> error [ label = "Desc." ]; 
+	S_0 -> error [ label = "Desc." ];
+}
+
+CON ESTADO PARA COMENTARIOS
+
+digraph finite{
+	rankdir=LR;
+	size="8,5"
+	node [shape = doublecircle]; S_0 IDENT NUM;
+	node [shape = circle];
+	S_0 -> IDENT [ label = "letra" ];
+	S_0 -> S_0 [ label = "simb" ];
+	S_0 -> NUM [ label = "numero" ];
+	IDENT -> NUM [ label = "numero" ];
+    IDENT -> S_0 [ label = "simb" ];
+	IDENT -> IDENT [ label = "letra" ];
+	NUM -> IDENT [ label = "letra" ];
+	NUM -> S_0 [ label = "simb" ];
+	NUM -> NUM [ label = "numero" ];
+	NUM -> NUM [ label = "punto" ];
+    coment -> S_0 [label = "\\n,*/"];
+    coment -> NUM [label = "\\n,*/"];
+    coment -> IDENT [label = "\\n,*/"];
+    coment -> coment [label = "caracter"];
+	IDENT -> coment [ label = "//,/*" ];
+	NUM -> coment [ label = "//,/*" ]; 
+	S_0 -> coment [ label = "//,/*" ];
+	error -> S_0 [label = "Simb."];
+    error -> NUM [label = "Numero"];
+    error -> IDENT [label = "letra"];
+    error -> error [label = "Desc."];
+    error -> coment [label = "//,/*"];
+	IDENT -> error [ label = "Desc." ];
+	NUM -> error [ label = "Desc." ]; 
+	S_0 -> error [ label = "Desc." ];
+}
