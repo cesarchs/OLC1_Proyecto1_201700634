@@ -141,7 +141,7 @@ def StateComent (line, column, text, word):
 
 def Reserved(TokenList):
     for token in TokenList:
-        if token[2] == 'identificador':
+        if token[2] == 'Cadena':
             for reservada in reservadas:
                 palabra = r"^" + reservada + "$"
                 if re.match(palabra, token[3], re.IGNORECASE):
