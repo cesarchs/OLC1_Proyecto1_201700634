@@ -147,9 +147,7 @@ def emparejar (tipo):
 
 
 
-'''
-EXPRESIONES REGULARES PARA IMPLEMENTACIÓN DE ANÁLISIS LÉXICO
-'''
+##################################################################################
 #[linea, columna, tipo, valor]
 import re
 
@@ -212,7 +210,7 @@ class AnalisadorLexico:
     def analisarM(self, entrada):
         tokens = self.inic(entrada)
         return tokens
-
+##############################################################################
 #-------------------------------analisis sintactico---------------------------------------
 class sintac:
     def __init__(self):

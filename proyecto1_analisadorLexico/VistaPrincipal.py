@@ -18,6 +18,7 @@ archivo = ""
 def nuevo():
     global archivo
     editor.delete(1.0, END)#ELIMINAR EL CONTENIDO
+    editor2.delete(1.0, END)
     archivo = ""
 
 def abrir():
@@ -156,6 +157,22 @@ def analisisJs():
     HTML = open ('analisisJS.html','w')
     HTML.write (salidaH)
     HTML.close()
+
+def analisisCalcu():
+    from AnalisisCalcu import AnalisadorLexico
+    from AnalisisCalcu import sintac
+    holaCalcu = AnalisadorLexico()
+    entrada4 = open(archivo,"r",encoding="utf-8")
+    content = entrada4.read()
+    tokens = holaCalcu.inic(content)
+    motor = sintac()
+    correccion = motor.parse(tokens)
+    if correccion:
+        editor2.insert(INSERT,'CORRECTO \n')
+        print("Analisis Sintactico Correcto.")
+    else:
+        editor2.insert(INSERT,'INCORRECTO \n')
+        print("Analisis Sintactico Incorrecto.")
     
 
 # MENU Y BARRA DE OPCIONES
@@ -174,6 +191,7 @@ archivoMenu2 = Menu(barraMenu, tearoff=0)
 archivoMenu2.add_command(label = "Analisis HTML", command = analisarhtml)
 archivoMenu2.add_command(label = "Analisis CSS", command = analisarCss)
 archivoMenu2.add_command(label = "Analisis JAVASCRIPT", command = analisisJs)
+archivoMenu2.add_command(label = "Analisis Calculadora", command = analisisCalcu)
 
 barraMenu.add_cascade(label = "Archivo", menu = archivoMenu)
 barraMenu.add_cascade(label = "Analisadores", menu = archivoMenu2)

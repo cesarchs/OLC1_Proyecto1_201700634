@@ -181,24 +181,24 @@ def analyze(self, entrada):
 
 
 
-nombre='entrada3.css'
-entrada = open(nombre,"r",encoding="utf-8")
-contenido = entrada.read()
-print(contenido)
-hola= AnalisadorLexicoCss()
-tokens = AnalisadorLexicoCss().inic(contenido)
-Reserved(tokens)
-for token in tokens:
-    print(token)
-print('ERRORES')
-for error in AnalisadorLexicoCss.Errores:
-    print(error)
-print ('COMENTARIOS')
-for coment in AnalisadorLexicoCss.Comentarios:
-    print(coment) 
-print ('PATH')
-AnalisadorLexicoCss.path = AnalisadorLexicoCss.Comentarios[0]
-print (AnalisadorLexicoCss.path[3])
-print ('BITACORA')
-for bita in AnalisadorLexicoCss.Bitacora:
-    print (bita)
+# nombre='entrada3.css'
+# entrada = open(nombre,"r",encoding="utf-8")
+# contenido = entrada.read()
+# print(contenido)
+# hola= AnalisadorLexicoCss()
+# tokens = AnalisadorLexicoCss().inic(contenido)
+# Reserved(tokens)
+# for token in tokens:
+#     print(token)
+# print('ERRORES')
+# for error in AnalisadorLexicoCss.Errores:
+#     print(error)
+# print ('COMENTARIOS')
+# for coment in AnalisadorLexicoCss.Comentarios:
+#     print(coment) 
+# print ('PATH')
+# AnalisadorLexicoCss.path = AnalisadorLexicoCss.Comentarios[0]
+# print (AnalisadorLexicoCss.path[3])
+# print ('BITACORA')
+# for bita in AnalisadorLexicoCss.Bitacora:
+#     print (bita)
