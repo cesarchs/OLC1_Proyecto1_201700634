@@ -9,6 +9,7 @@ class AnalisadorLexicoJs:
     Errores = []
     Comentarios = []
     Bitacora = []
+    path = ''
     graficar ="digraph finite{ rankdir=LR; size=\"8,5\" node [shape = doublecircle]; S_0 IDENT NUM; node [shape = circle]; S_0 -> IDENT [ label = \"letra\" ]; S_0 -> S_0 [ label = \"simb\" ]; S_0 -> NUM [ label = \"numero\" ]; IDENT -> NUM [ label = \"numero\" ]; IDENT -> S_0 [ label = \"simb\" ]; IDENT -> IDENT [ label = \"letra\" ]; NUM -> IDENT [ label = \"letra\" ]; NUM -> S_0 [ label = \"simb\" ]; NUM -> NUM [ label = \"numero\" ]; NUM -> NUM [ label = \"punto\" ]; coment -> S_0 [label = \"\\n,*/\"]; coment -> NUM [label = \"\\n,*/\"]; coment -> IDENT [label = \"\\n,*/\"]; coment -> coment [label = \"caracter\"]; IDENT -> coment [ label = \"//,/*\" ]; NUM -> coment [ label = \"//,/*\" ];  S_0 -> coment [ label = \"//,/*\" ]; error -> S_0 [label = \"Simb.\"]; error -> NUM [label = \"Numero\"]; error -> IDENT [label = \"letra\"]; error -> error [label = \"Desc.\"]; error -> coment [label = \"//,/*\"]; IDENT -> error [ label = \"Desc.\" ]; NUM -> error [ label = \"Desc.\" ]; S_0 -> error [ label = \"Desc.\" ]; }"
 
     reservadas = ['var','true','if','console','log','else','for','while','Do','continue','break','return','this','class','Math','pow']
@@ -200,8 +201,12 @@ def Reserved(TokenList):
                     token[2] = 'reservada'
                     break
 
-nombre= 'entrada2' 
-entrada = open(nombre +'.olc1')
+                
+
+        
+
+nombre= 'entrada4' 
+entrada = open(nombre +'.js')
 contenido = entrada.read()
 print(contenido)
 hola= AnalisadorLexicoJs()
@@ -215,10 +220,26 @@ for error in AnalisadorLexicoJs.Errores:
 print ('COMENTARIOS')
 for coment in AnalisadorLexicoJs.Comentarios:
     print(coment) 
-# print ('PATH')
-# for pat in pathh: 
-#     print (pat)
-# print ('BITACORA')
-# for bita in AnalisadorLexicoJs.Bitacora:
-#     print (bita)
+print ('BITACORA')
+for bita in AnalisadorLexicoJs.Bitacora:
+    print (bita)
 print ('GRAFICA')
+print ('PATH')
+AnalisadorLexicoJs.path = AnalisadorLexicoJs.Comentarios[0]
+print (AnalisadorLexicoJs.path[3])
+salidaH=''
+salidaH += '<html>\n'
+salidaH += '<head\n>'
+salidaH +='<title>archivo de JS</title>\n'
+salidaH +='</head> \n <body style="background-color:black"> \n <h1 style="text-align: center;color:white"> errores lexicos JS <h1>\n'
+salidaH +='<div class="container">\n <h2 style="color:white">ERRORES</h2>\n <div style="background-color:white">\n'
+salidaH +='<table> \n <thead> \n <tr> \n <th>linea</th>\n <th>columna</th>\n <th> token </th>\n </tr>\n'
+for error in AnalisadorLexicoJs.Errores:
+    salidaH +='<tr>\n'
+    salidaH += '<th>' + str(error[0]) +'</th>\n'
+    salidaH += '<th>' + str(error[1]) +'</th>\n'
+    salidaH += '<th>' + error[2] +'</th>\n'
+    salidaH +='</tr>\n'
+salidaH +='</thead>\n </table>\n </div>\n </div>\n <footer style="background-color: black; color:white">\n <p>FIN DE LA TABLA DE ERRORES</p>\n'
+salidaH +='</footer>\n </body> \n </html>'
+print (salidaH)

@@ -9,7 +9,7 @@ class AnalisadorLexicoCss:
     Errores = []
     Comentarios = []
     Bitacora = []
-
+    path = ''
     reservadas = ['color','font','size','background','margin','top','bottom','text','align','position','hover','before','after','container','header','content',
                     'border','weight','padding','left','line','height','opacity','family','right','width','image','style','display','margin','float','clear','max','min',
                     'px','em','vh','vw','in','cm','mm','pt','pc','url','content']
@@ -175,9 +175,14 @@ def Reserved(TokenList):
                     token[2] = 'reservada'
                     break
 
+def analyze(self, entrada):
+        tokens = self.inic(entrada)
+        return tokens
 
-nombre= 'entrada3' 
-entrada = open(nombre +'.olc1')
+
+
+nombre='entrada3.css'
+entrada = open(nombre,"r",encoding="utf-8")
 contenido = entrada.read()
 print(contenido)
 hola= AnalisadorLexicoCss()
@@ -191,9 +196,9 @@ for error in AnalisadorLexicoCss.Errores:
 print ('COMENTARIOS')
 for coment in AnalisadorLexicoCss.Comentarios:
     print(coment) 
-# print ('PATH')
-# for pat in pathh: 
-#     print (pat)
+print ('PATH')
+AnalisadorLexicoCss.path = AnalisadorLexicoCss.Comentarios[0]
+print (AnalisadorLexicoCss.path[3])
 print ('BITACORA')
 for bita in AnalisadorLexicoCss.Bitacora:
     print (bita)

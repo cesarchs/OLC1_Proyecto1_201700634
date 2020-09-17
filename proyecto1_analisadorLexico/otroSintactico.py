@@ -71,17 +71,17 @@ class AnalisisSintactico:
     CarroToken = ''
     ListaEntrada =[]
 
-    def parseador (self, listaEntrada2):
-        global Carro,CarroToken
-        listaEntrada = listaEntrada2
-        CarroToken = listaEntrada[0]
-        carro=0
-        E 
+def parser (listaEntrada2):
+    global Carro,CarroToken
+    listaEntrada = listaEntrada2
+    CarroToken = listaEntrada[Carro]
+    E 
 
 def E():
     global CarroToken,Carro
     T
     EP 
+
 def EP():
     global CarroToken,Carro
     if CarroToken[2]== 'suma':
@@ -92,10 +92,12 @@ def EP():
         emparejar ('resta')
         T 
         EP 
+
 def T():
     global CarroToken,Carro
     F 
     TP 
+
 def TP():
     global CarroToken,Carro
     if CarroToken[2]=='multiplicacion':
@@ -114,14 +116,14 @@ def F():
         emparejar('parentesisC')
     else:
         emparejar('numero')
+
 def emparejar (tipo):
     global CarroToken,Carro
-    if tipo == CarroToken[2]:
+    if tipo != CarroToken[2]:
         print ('error se esperaba otro simbolo')
+
     if CarroToken[2] != 'ultimo':
-        AnalisisSintactico.Carro +=1
-
-
+        Carro +=1
 
 # nombre= 'entrada6' 
 # entrada = open(nombre +'.olc1')
@@ -130,22 +132,13 @@ def emparejar (tipo):
 # hola= AnalisisLexicoCalcu()
 # tokens = AnalisisLexicoCalcu().inicio(contenido)
 # # Reserved(tokens)
-# hola2 = AnalisisSintactico()
-# hola2.parseador(tokens)
+# tokens = AnalisisSintactico().ListaEntrada
 
 # for token in tokens:
 #     print(token)
 # print('ERRORES')
 # for error in AnalisisLexicoCalcu.ErroresLex:
 #     print(error)
-
-
-
-
-
-
-
-
 
 '''
 EXPRESIONES REGULARES PARA IMPLEMENTACIÓN DE ANÁLISIS LÉXICO
@@ -161,7 +154,7 @@ class AnalisadorLexico:
 
         self.Errores = []
 
-        self.signos = {"MAS":'\+',"MENOS":'\-', "POR":'\*',"DIV":'/', "PARA":'\(', "PARC":'\)'}
+        self.signos = {"MAS":'\+',"MAS":'\-', "POR":'\*', "PARA":'\(', "PARC":'\)'}
 
     def inic(self, text):
         self.linea = 1
@@ -204,16 +197,36 @@ class AnalisadorLexico:
         if self.counter < len(text):
             if re.search(r"[0-9]", text[self.counter]):#ENTERO
                 return self.StateNumber(line, column, text, word + text[self.counter])
+            # elif re.search(r"\.", text[self.counter]):#DECIMAL
+            #     return self.StateDecimal(line, column, text, word + text[self.counter])
             else:
                 return [line, column, 'NUMERIC', word]
+                #agregar automata de numero en el arbol, con el valor
         else:
             return [line, column, 'NUMERIC', word]
 
+    # def StateDecimal(self, line, column, text, word):
+    #     self.counter += 1
+    #     self.columna += 1
+    #     if self.counter < len(text):
+    #         if re.search(r"[0-9]", text[self.counter]):#DECIMAL
+    #             return self.StateDecimal(line, column, text, word + text[self.counter])
+    #         else:
+    #             return [line, column, 'NUMERIC', word]
+    #             #agregar automata de decimal en el arbol, con el valor
+    #     else:
+    #         return [line, column, 'NUMERIC', word]
+
     def analisarM(self, entrada):
         tokens = self.inic(entrada)
+        tokens += '#'
         return tokens
 
-#-------------------------------analisis sintactico---------------------------------------
+'''
+ANÁLISIS SINTACTICO
+'''
+
+
 class sintac:
     def __init__(self):
         self.counter = 0
@@ -248,10 +261,6 @@ class sintac:
                 self.pila.append('MAS')
             elif l == "*":
                 self.pila.append('POR')
-            elif l == "/":
-                self.pila.append('DIV')
-            elif l == "-":
-                self.pila.append('MENOS')
             else:
                 self.pila.append(l)
 
@@ -263,11 +272,18 @@ class sintac:
             var2 = tokens[0][2]             #PRIMER TOKEN, TIPO DE TOKEN
             if var1 == var2:
                 if var1 == "$":
+                    # print("------------------------------------------------PILA------------------------------------------------")
+                    # print(self.pila)
+                    # print("------------------------------------------------BUFFER------------------------------------------------")
+                    # print(tokens)
                     return True
-                elif var1 == "NUMERIC" or var1 == "PARA" or var1 == "PARC" or var1 == "MAS" or var1 == "POR"or var1 == "DIV"or var1 == "MENOS":
+                elif var1 == "NUMERIC" or var1 == "PARA" or var1 == "PARC" or var1 == "MAS" or var1 == "POR":
                     self.pila.pop()
                     del tokens[0]
-
+                    # print("------------------------------------------------PILA------------------------------------------------")
+                    # print(self.pila)
+                    # print("------------------------------------------------BUFFER------------------------------------------------")
+                    # print(tokens)
             else:
                 self.pila.pop() #SACA EL ULTIMO ELEMENTO DE LA PILA, HASTA ARRIBA
                 val = self.obtenerMatrix(var1, var2)
@@ -276,6 +292,12 @@ class sintac:
                     return False
                 elif val != None:
                     self.pushear(val)
+            #     print("------------------------------------------------PILA------------------------------------------------")
+            #     print(self.pila)
+            #     print("------------------------------------------------BUFFER------------------------------------------------")
+            #     print(tokens)
+
+            # print("***********************************************************************************************************************")
 
 entrada = open('entrada6.olc1')
 contenido = entrada.read()
